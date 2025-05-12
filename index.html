@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather app</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="card">
@@ -19,16 +22,16 @@
             <div class="details">
                 <div class="col">
                     <img src="images/humidity.png" >
-                    <div>
-                        <p class="humidity">50%</p>
-                        <p>Humidity</p>
+                    <div >
+                        <p class="hum">Humdidty</p>
+                        <p class="humidity">Humidity</p>
                     </div>
                 </div>
                 <div class="col">
                     <img src="images/wind.png" >
-                    <div>
-                        <p class="wind">km/h</p>
-                        <p>Humidity</p>
+                    <div >
+                        <p class="wi">Windspeed</p>
+                        <p  class="wind">km/h</p>
                     </div>
                 </div>
             </div>
@@ -36,3 +39,20 @@
     </div>
 </body>
 </html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    const apikey="38abf32633d593683704ab51e7c1d747"
+    const apiurl="https://api.openweathermap.org/data/2.5/weather?q=Sahiwal&units=metric"
+    async function checkweather() {
+        const response= await fetch(apiurl + `&appid=${apikey}`)
+        var data=await response.json()
+$(".city").text(data.name);
+$(".temp").text(data.main.temp);
+$(".wind").text(data.wind.speed + " km/h");
+$(".humidity").text(data.main.humidity + "%");
+
+
+        console.log(data)
+    }
+    checkweather()
+</script>
