@@ -41,22 +41,26 @@
 </html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    const apikey="38abf32633d593683704ab51e7c1d747"
-    const apiurl="https://api.openweathermap.org/data/2.5/weather?&units=metric &q="
-    const searchbx=$(".searchbox input")
-    const searchbtn=$(".searchbox button")
-   
+    const apikey = "38abf32633d593683704ab51e7c1d747";
+    const apiurl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+    const searchbx = $(".searchbox input");
+    const searchbtn = $(".searchbox button");
+
     async function checkweather(city) {
-        const response= await fetch(apiurl + city + `&appid=${apikey}`)
-        var data=await response.json()
-$(".city").text(data.name);
-$(".temp").text(Math.round(main.temp )+ "°C");
-$(".wind").text(data.wind.speed + " km/h");
-$(".humidity").text(data.main.humidity + "%");
+        const response = await fetch(apiurl + city + `&appid=${apikey}`);
+        const data = await response.json();
 
-
-
-        console.log(data)
+        $(".city").text(data.name);
+        $(".temp").text(Math.round(data.main.temp) + "°C");
+        $(".wind").text(data.wind.speed + " km/h");
+        $(".humidity").text(data.main.humidity + "%");
     }
-    checkweather()
+
+    searchbtn.click(() => {
+        checkweather(searchbx.val());
+    });
+
+    // Optional: Call with a default city
+    checkweather("Lahore");
 </script>
