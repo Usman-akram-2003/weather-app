@@ -15,6 +15,9 @@
             <input type="text" placeholder="Enter the city name" spellcheck="false" >
             <button ><img src="https://cdn-icons-png.flaticon.com/128/3686/3686896.png" alt=""></button>
         </div>
+        <div class="error">
+            <p>Invalid city name </p>
+        </div>
         <div class="weather">
             <img src="images/heavy-rain.png" alt="" class="weathericon">
             <h1 class="temp">22°C</h1>
@@ -40,6 +43,7 @@
 </body>
 </html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 <script>
     const apikey = "38abf32633d593683704ab51e7c1d747";
     const apiurl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
@@ -47,20 +51,72 @@
     const searchbx = $(".searchbox input");
     const searchbtn = $(".searchbox button");
 
-    async function checkweather(city) {
-        const response = await fetch(apiurl + city + `&appid=${apikey}`);
-        const data = await response.json();
+    async function checkWeather(city) {
+        try {
+            const response = await fetch(`${apiurl}${city}&appid=${apikey}`);
 
-        $(".city").text(data.name);
-        $(".temp").text(Math.round(data.main.temp) + "°C");
-        $(".wind").text(data.wind.speed + " km/h");
-        $(".humidity").text(data.main.humidity + "%");
+            if (!response.ok) {
+                // If city not found or other error
+                $(".weather").hide();
+                $(".error").show();
+                return;
+            }
+
+            const data = await response.json();
+
+            $(".city").text(data.name);
+            $(".temp").text(`${Math.round(data.main.temp)}°C`);
+            $(".wind").text(`${data.wind.speed} km/h`);
+            $(".humidity").text(`${data.main.humidity}%`);
+
+            // Update weather icon based on condition
+            let weatherCondition = data.weather[0].main;
+            let iconSrc = "images/";
+
+            switch (weatherCondition) {
+                case "Clear":
+                    iconSrc += "sun.png";
+                    break;
+                case "Clouds":
+                    iconSrc += "cloud.png";
+                    break;
+                case "Rain":
+                    iconSrc += "heavy-rain.png";
+                    break;
+                case "Drizzle":
+                    iconSrc += "drizzle.png";
+                    break;
+                case "Mist":
+                    iconSrc += "fog.png";
+                    break;
+                default:
+                    iconSrc += "default.png"; 
+            }
+
+            $(".weathericon").attr("src", iconSrc);
+            $(".weather").show();
+            $(".error").hide();
+        } catch (error) {
+            console.error("Error fetching weather data:", error);
+            $(".weather").hide();
+            $(".error").show();
+        }
     }
 
     searchbtn.click(() => {
-        checkweather(searchbx.val());
+        const city = searchbx.val().trim();
+        if (city) {
+            checkWeather(city);
+        }
     });
 
-    // Optional: Call with a default city
-    checkweather("Lahore");
+    // Optionally load default city
+    // checkWeather("Lahore");
 </script>
+
+    
+    
+
+   
+    
+
